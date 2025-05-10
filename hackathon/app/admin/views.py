@@ -5,7 +5,7 @@ from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
 from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult, Participants
 from hackathon.app.admin.error import *
-from hackathon.app.common import clients, admins, Team
+from hackathon.app.common import clients, Team
 from typing import List
 
 admin_router = APIRouter()
@@ -43,9 +43,9 @@ async def start_game(
     for queue in clients:
         await queue.put(response)
 
-    admin_valid = False
-    for queue in admins:
-        await queue.put(end_code)
+    # admin_valid = False
+    # for queue in admins:
+    #     await queue.put(end_code)
         
     return Response(status_code=status.HTTP_200_OK)
 
@@ -90,26 +90,26 @@ async def game_result() -> GameResult:
 async def get_headcount() -> int:
     return len(clients)
 
-@admin_router.get("/participants")
-async def get_participants(request: Request) -> Participants:
+# @admin_router.get("/participants")
+# async def get_participants(request: Request) -> Participants:
 
-    queue = asyncio.Queue()
-    admins.append(queue)
+#     queue = asyncio.Queue()
+#     admins.append(queue)
 
-    async def event_generator():
-        try:
-            while admin_valid:
-                if await request.is_disconnected():
-                    break
-                try:
-                    data = await asyncio.wait_for(queue.get(), timeout=3)
-                    if data == end_code:
-                        break
-                    yield f"data: {data}\n\n"
-                except asyncio.TimeoutError:
-                    continue
-        finally:
-            print("Client disconnected")
-            admins.remove(queue)
+#     async def event_generator():
+#         try:
+#             while admin_valid:
+#                 if await request.is_disconnected():
+#                     break
+#                 try:
+#                     data = await asyncio.wait_for(queue.get(), timeout=3)
+#                     if data == end_code:
+#                         break
+#                     yield f"data: {data}\n\n"
+#                 except asyncio.TimeoutError:
+#                     continue
+#         finally:
+#             print("Client disconnected")
+#             admins.remove(queue)
     
-    return StreamingResponse(event_generator(), media_type="text/event-stream")
+#     return StreamingResponse(event_generator(), media_type="text/event-stream")
