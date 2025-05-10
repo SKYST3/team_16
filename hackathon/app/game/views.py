@@ -2,6 +2,7 @@ from fastapi import APIRouter, status
 from hackathon.app.common import values
 from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
+from hackathon.app.game import service
 
 game_router = APIRouter()
 
@@ -25,12 +26,7 @@ def get_game():
 
 @game_router.post("/submit", response = GameSubmitResponse)
 def submit_score(submission: GameSubmitRequest):
-    answer_timestamp = values.get('beat_list')
-
-    normal_count = 0
-    good_count = 0
-    perfect_count = 0
-    total_score = 0
+    answer_timestamps = values.get('beat_list')
 
     submitted_timestamps = submission.timestamp
 
@@ -38,9 +34,5 @@ def submit_score(submission: GameSubmitRequest):
 
     # Function that calculates the perfect, good, misses
 
-    return GameSubmitResponse(
-        normal=normal_count,
-        good=good_count,
-        perfect=perfect_count,
-        score=total_score
-    )
+    score_data = service.calculate_score(submission.timestamp, answer_timestamps)
+    return GameSubmitResponse(**score_data)
