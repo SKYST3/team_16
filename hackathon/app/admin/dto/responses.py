@@ -11,3 +11,9 @@ class GameScore(BaseModel):
 
 class GameResult(BaseModel):
     scores: list[GameScore]
+
+class Participants(BaseModel):
+    SEOUL: int
+    KAIST: int
+    KOREA: int
+    YONSEI: int

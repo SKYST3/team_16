@@ -2,7 +2,7 @@ import json
 from fastapi import APIRouter, Response, status
 from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
-from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult
+from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult, Participants
 from hackathon.app.admin.error import *
 from hackathon.app.common import clients
 from typing import List
@@ -55,6 +55,15 @@ async def game_result() -> GameResult:
 
     return GameResult(scores=formatted_scores)
 
+
 @admin_router.get("/game/headcount")
 async def get_headcount() -> int:
     return len(clients)
+
+@admin_router.get("/game/queue")
+async def get_queue() -> int:
+    return len(clients)
+
+@admin_router.get("/game/participants")
+async def get_participants() -> Participants:
+    return 
