@@ -65,23 +65,14 @@ async def game_result() -> GameResult:
                 break  # No need to check other scores in the same dict
 
     formatted_scores: List[GameScore] = []
-    if non_zero_count <= 1:
-        # Apply dummy scores if all scores are zero or only one is non-zero
-        formatted_scores = [
-            GameScore(team=Team.KOREA, score=150),
-            GameScore(team=Team.YONSEI, score=120),
-            GameScore(team=Team.SEOUL, score=100),
-            GameScore(team=Team.KAIST, score=90),
-        ]
-    else:
-        for score_dict in scores_data:
-            for team_enum, score_value in score_dict.items():
-                participant_count = participants_data.get(team_enum, 1)  # Get participant count, default to 0
-                if participant_count > 0:
-                    average_score = score_value / participant_count
-                    formatted_scores.append(GameScore(team=team_enum, score=int(average_score)))
-                else:
-                    formatted_scores.append(GameScore(team=team_enum, score=0))  # Or handle as you see fit
+    
+    for score_dict in scores_data:
+        for team_enum, score_value in score_dict.items():
+            participant_count = participants_data.get(team_enum, 1)
+            if(participant_count == 0):
+                participant_count = 1
+            average_score = score_value / participant_count
+            formatted_scores.append(GameScore(team=team_enum, score=int(average_score)))
 
     return GameResult(scores=formatted_scores)
 
