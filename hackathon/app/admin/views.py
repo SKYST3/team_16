@@ -57,13 +57,6 @@ async def game_result() -> GameResult:
     if scores_data is None:
         raise ScoreNotFoundError()
 
-    non_zero_count = 0
-    for score_dict in scores_data:
-        for score in score_dict.values():
-            if score != 0:
-                non_zero_count += 1
-                break  # No need to check other scores in the same dict
-
     formatted_scores: List[GameScore] = []
     
     for score_dict in scores_data:
