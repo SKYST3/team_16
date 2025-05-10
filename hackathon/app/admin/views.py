@@ -32,10 +32,15 @@ async def start_game(
 
     return Response(status_code=status.HTTP_200_OK)
 
-@admin_router.post("/game/result")
+@admin_router.post("/game/result", response_model=GameScore)
 async def game_result() -> GameScore:
-    if values.get("scores") is None:
-        return ScoreNotFoundError()
-    return {
-        "scores": values["scores"],
-    }
+    scores_data = values.get("scores")
+    if scores_data is None:
+        raise ScoreNotFoundError()
+
+    formatted_scores = []
+    for score_dict in scores_data:
+        for team_enum, score_value in score_dict.items():
+            formatted_scores.append({"team": team_enum.value, "score": score_value})
+
+    return {"scores": formatted_scores}
