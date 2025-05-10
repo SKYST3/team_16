@@ -1,7 +1,7 @@
 import asyncio, json
 from fastapi import APIRouter, status, HTTPException, Request, Response
 from fastapi.responses import StreamingResponse
-from hackathon.app.common import values, clients, Team, admins
+from hackathon.app.common import values, clients, Team
 from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest, TeamCountResquest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
 from hackathon.app.game import service
@@ -35,13 +35,13 @@ async def submit_score(submission: GameSubmitRequest):
     if answer_timestamps is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Beat list not initialized")
 
-    print(updated_timestamps)
+    # print(updated_timestamps)
 
     try:
         score_data = await service.process_submission_and_calculate_score(
             updated_timestamps, answer_timestamps, submission.team
         )
-        print(score_data)
+        print(submission.team, score_data)
         return GameSubmitResponse(**score_data)
     except Exception as e:
 
@@ -65,8 +65,9 @@ async def select_team(selection: TeamCountResquest):
                 "team": selected_team,
                 "count": values["participants"][selected_team],
             }
-            for queue in admins:
-                await queue.put(json.dumps(resp))
+            # for queue in admins:
+            #     await queue.put(json.dumps(resp))
+            print(f"Team {selected_team} joined")
             return Response(status_code=status.HTTP_200_OK)
         else:
             raise HTTPException(
