@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 import asyncio
 import time
+from hackathon.app.common import clients
 
 app = FastAPI()
 
@@ -17,11 +18,8 @@ app.add_middleware(
 
 app.include_router(api_router, prefix="/api")
 
-clients = []
-
 @app.get("/game")
 async def game_stream(request: Request):
-    loop = asyncio.get_event_loop()
     queue = asyncio.Queue()
 
     # 클라이언트 등록

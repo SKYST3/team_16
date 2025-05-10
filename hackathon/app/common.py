@@ -18,3 +18,5 @@ values = {
         {Team.KOREA: 0},
 	]
 }
+
+clients = []

@@ -3,6 +3,7 @@ from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
 from hackathon.app.admin.dto.responses import GameStart, GameScore
 from hackathon.app.admin.error import *
+from hackathon.app.common import clients
 
 admin_router = APIRouter()
 
@@ -30,6 +31,9 @@ async def start_game(
     
     values["game_started_at"] = req.game_started_at
 
+    for queue in clients:
+        await queue.put(str(req.game_started_at))
+
     return Response(status_code=status.HTTP_200_OK)
 
 @admin_router.post("/game/result")
@@ -39,3 +43,7 @@ async def game_result() -> GameScore:
     return {
         "scores": values["scores"],
     }
+
+@admin_router.get("/game/queue")
+async def get_queue() -> int:
+    return len(clients)
