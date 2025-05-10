@@ -31,7 +31,8 @@ async def start_game(
     
     response = {
         "game_started_at" : values["game_started_at"],
-        "song_length" : values["song_length"]
+        "song_length" : values["song_length"],
+        "beat_list" : values["beat_list"]
     }
     response = json.dumps(response)
 
