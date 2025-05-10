@@ -3,7 +3,7 @@ from hackathon.app.common import Team
 
 class GameStart(BaseModel):
     song_length: int
-    beat_list: list[int]
+    beat_list: list[float]
 
 class GameScore(BaseModel):
     team: Team
