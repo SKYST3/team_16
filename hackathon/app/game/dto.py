@@ -1,11 +1,12 @@
 from pydantic import BaseModel
 from typing import List
+
 class GameStatusResponse(BaseModel):
     game_start_at: int
     song_length: int
 
 class GameSubmitRequest(BaseModel):
-    timestamp: List[int]
+    timestamp: List[float]
     team: str
 
 class GameSubmitResponse(BaseModel):
