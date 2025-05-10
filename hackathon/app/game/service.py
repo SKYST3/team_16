@@ -73,10 +73,14 @@ async def process_submission_and_calculate_score(
                 # No close submitted timestamp found for this answer, it's a miss
                 pass # You could track misses if needed
 
-    for team_data in values['scores']:
-        if team_data['team'].value == team_name:
-            team_data['score'] += total_score
-            break  # Exit the loop once the team is found
+    for score_dict in values['scores']:
+        for team_enum in score_dict.items():
+            if team_enum.value == team_name:
+                score_dict[team_enum] += total_score
+                break  # Exit the inner loop once the team is found
+        else:
+            continue # Continue to the outer loop if the inner loop didn't break
+        break      # Exit the outer loop once the team is found
 
     return {
         "normal": normal_count,
