@@ -3,7 +3,6 @@ from hackathon.app.common import values
 from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
 from hackathon.app.game import service
-from hackathon.app.game.service import test
 
 game_router = APIRouter()
 
@@ -34,7 +33,7 @@ async def submit_score(submission: GameSubmitRequest):
 
     try:
         score_data = await service.process_submission_and_calculate_score(
-            submission.timestamp, answer_timestamps
+            submission.timestamp, answer_timestamps, submission.team
         )
         return GameSubmitResponse(**score_data)
     except Exception as e:

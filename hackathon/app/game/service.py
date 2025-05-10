@@ -74,14 +74,14 @@ async def process_submission_and_calculate_score(
                 pass # You could track misses if needed
 
     for score_dict in values['scores']:
-        for team_enum in score_dict.items():
+        for team_enum in score_dict:  # Iterate through the keys (Team enums)
             if team_enum.value == team_name:
                 score_dict[team_enum] += total_score
-                break  # Exit the inner loop once the team is found
+                break
         else:
-            continue # Continue to the outer loop if the inner loop didn't break
-        break      # Exit the outer loop once the team is found
-
+            continue
+        break
+    
     return {
         "normal": normal_count,
         "good": good_count,
