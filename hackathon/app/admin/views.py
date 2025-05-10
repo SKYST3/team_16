@@ -1,3 +1,4 @@
+import json
 from fastapi import APIRouter, Response, status
 from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
@@ -27,9 +28,15 @@ async def start_game(
     req: GameStartRequest,
 ) -> Response:    
     values["game_started_at"] = req.game_started_at
+    
+    response = {
+        "game_started_at" : values["game_started_at"],
+        "song_length" : values["song_length"]
+    }
+    response = json.dumps(response)
 
     for queue in clients:
-        await queue.put(str(req.game_started_at))
+        await queue.put(response)
         
     return Response(status_code=status.HTTP_200_OK)
 

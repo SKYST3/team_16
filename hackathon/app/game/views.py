@@ -1,5 +1,7 @@
-from fastapi import APIRouter, status, HTTPException
-from hackathon.app.common import values
+import asyncio
+from fastapi import APIRouter, status, HTTPException, Request
+from fastapi.responses import StreamingResponse
+from hackathon.app.common import values, clients
 from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
 from hackathon.app.game import service
@@ -7,22 +9,18 @@ from hackathon.app.game import service
 game_router = APIRouter()
 
 @game_router.get("/status", status_code=status.HTTP_200_OK)
-async def get_game():
-    # game_start_at 있는지 확인
-    game_start_at = values.get('game_started_at')
-    if game_start_at is None:
-        raise GameStartAtNotFoundError()
+async def get_game_status(request: Request):
+    queue = asyncio.Queue()
+    clients.append(queue)
 
-    # song_length 없으면 에러 반환환
-    song_length = values.get('song_length')
-    if song_length is None:
-        raise SongLengthNotFoundError()
+    async def event_generator():
+        try:
+            data = await queue.get()
+            yield f"data: {data}\n\n"
+        finally:
+            clients.remove(queue)
 
-    # 값 반환
-    return GameStatusResponse(
-        game_start_at = game_start_at,
-        song_length = song_length
-    )
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 @game_router.post("/submit", response_model=GameSubmitResponse)
 async def submit_score(submission: GameSubmitRequest):
