@@ -3,6 +3,7 @@ from hackathon.app.common import values
 from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
 from hackathon.app.game import service
+from hackathon.app.game.service import test
 
 game_router = APIRouter()
 
