@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Response, status
 from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
-from hackathon.app.admin.dto.responses import GameStart
-from hackathon.app.admin.error import BeatListNotFoundError, SongLengthNotFoundError, GameStartAtNotFoundError
+from hackathon.app.admin.dto.responses import GameStart, GameScore
+from hackathon.app.admin.error import *
 
 admin_router = APIRouter()
 
@@ -22,9 +22,9 @@ async def get_game() -> GameStart:
     }
 
 @admin_router.post("/game/start")
-def start_game(
+async def start_game(
     req: GameStartRequest,
-):
+) -> Response:
     if values.get("game_started_at") is not None:
         return GameStartAtNotFoundError()
     
@@ -33,7 +33,9 @@ def start_game(
     return Response(status_code=status.HTTP_200_OK)
 
 @admin_router.post("/game/result")
-def game_result():
+async def game_result() -> GameScore:
+    if values.get("scores") is not None:
+        return ScoreNotFoundError()
     return {
         "scores": values["scores"],
     }
