@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, HTTPException
 from hackathon.app.common import values
 from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
@@ -7,7 +7,7 @@ from hackathon.app.game import service
 game_router = APIRouter()
 
 @game_router.get("/status", status_code=status.HTTP_200_OK)
-def get_game():
+async def get_game():
     # game_start_at 있는지 확인
     game_start_at = values.get('game_started_at')
     if game_start_at is None:
@@ -25,14 +25,16 @@ def get_game():
     )
 
 @game_router.post("/submit", response = GameSubmitResponse)
-def submit_score(submission: GameSubmitRequest):
+async def submit_score(submission: GameSubmitRequest):
     answer_timestamps = values.get('beat_list')
 
     submitted_timestamps = submission.timestamp
 
-    # Need function to extract closest submitted_timestamp to answer key
+    if answer_timestamps is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Beat list not initialized")
 
-    # Function that calculates the perfect, good, misses
-
-    score_data = service.calculate_score(submission.timestamp, answer_timestamps)
-    return GameSubmitResponse(**score_data)
+    try:
+        score_data = service.calculate_score(submitted_timestamps, answer_timestamps)
+        return GameSubmitResponse(**score_data)
+    except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))

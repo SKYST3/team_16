@@ -3,7 +3,7 @@ from typing import List
 PERFECT_THRESHOLD = 50  # Example threshold in milliseconds
 GOOD_THRESHOLD = 150    # Example threshold in milliseconds
 
-def calculate_score(submitted_timestamps: List[int], answer_timestamps: List[int]) -> dict:
+async def calculate_score(submitted_timestamps: List[int], answer_timestamps: List[int]) -> dict:
     """
     Calculates the score based on submitted timestamps and the answer key.
     """
