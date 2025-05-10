@@ -16,7 +16,14 @@ values = {
         {Team.KAIST: 0},
         {Team.YONSEI: 0},
         {Team.KOREA: 0},
-	]
+	],
+    "participants": {
+        Team.SEOUL: 0,
+        Team.KAIST: 0,
+        Team.YONSEI: 0,
+        Team.KOREA: 0,
+    },
+
 }
 
 clients = []

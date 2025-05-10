@@ -1,10 +1,12 @@
-import json
+import json, asyncio
 from fastapi import APIRouter, Response, status
+from fastapi.responses import StreamingResponse
 from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
-from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult
+from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult, Participants
 from hackathon.app.admin.error import *
 from hackathon.app.common import clients
+from typing import List
 
 admin_router = APIRouter()
 
@@ -47,9 +49,33 @@ async def game_result() -> GameResult:
     if scores_data is None:
         raise ScoreNotFoundError()
 
-    formatted_scores: List[GameScore] = []
+    formatted_scores: list[GameScore] = []
     for score_dict in scores_data:
         for team_enum, score_value in score_dict.items():
             formatted_scores.append(GameScore(team=team_enum, score=score_value))
 
     return GameResult(scores=formatted_scores)
+
+
+@admin_router.get("/game/headcount")
+async def get_headcount() -> int:
+    return len(clients)
+
+@admin_router.get("/game/queue")
+async def get_queue() -> int:
+    return len(clients)
+
+@admin_router.get("/game/participants")
+async def get_participants() -> Participants:
+
+    queue = asyncio.Queue()
+    clients.append(queue)
+
+    async def event_generator():
+        try:
+            data = await queue.get()
+            yield f"data: {data}\n\n"
+        finally:
+            clients.remove(queue)
+    
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
