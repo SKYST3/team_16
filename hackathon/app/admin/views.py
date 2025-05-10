@@ -24,12 +24,8 @@ async def get_game() -> GameStart:
 @admin_router.post("/game/start")
 async def start_game(
     req: GameStartRequest,
-) -> Response:
-    if values.get("game_started_at") is None:
-        return GameStartAtNotFoundError()
-    
+) -> Response:    
     values["game_started_at"] = req.game_started_at
-
     return Response(status_code=status.HTTP_200_OK)
 
 @admin_router.post("/game/result")
