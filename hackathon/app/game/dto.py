@@ -6,7 +6,7 @@ class GameStatusResponse(BaseModel):
     song_length: int
 
 class GameSubmitRequest(BaseModel):
-    timestamp: List[float]
+    timestamp: List[int]
     team: str
 
 class GameSubmitResponse(BaseModel):
