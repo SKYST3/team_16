@@ -62,10 +62,10 @@ async def process_submission_and_calculate_score(
                 used_indices[closest_submitted_index] = True
                 if closest_diff <= PERFECT_THRESHOLD:
                     perfect_count += 1
-                    total_score += 30
+                    total_score += 4
                 elif closest_diff <= GOOD_THRESHOLD:
                     good_count += 1
-                    total_score += 20
+                    total_score += 2
                 else:
                     normal_count += 1
                     total_score += 0
