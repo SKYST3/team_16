@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from hackathon.app.admin import admin_router
-from hackathon.app.game import game_router
+from hackathon.app.admin.views import admin_router
+from hackathon.app.game.views import game_router
 
 api_router = APIRouter()
 
