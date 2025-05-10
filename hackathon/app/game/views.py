@@ -1,8 +1,8 @@
 import asyncio
-from fastapi import APIRouter, status, HTTPException, Request
+from fastapi import APIRouter, status, HTTPException, Request, Response
 from fastapi.responses import StreamingResponse
-from hackathon.app.common import values, clients
-from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest
+from hackathon.app.common import values, clients, Team
+from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest, TeamCountResquest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
 from hackathon.app.game import service
 
@@ -37,3 +37,27 @@ async def submit_score(submission: GameSubmitRequest):
     except Exception as e:
 
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Scoring error: {str(e)}")
+    
+@game_router.post("/select_team")
+async def select_team(selection: TeamCountResquest):
+    team_str = selection.team
+    participants = values.get("participants")
+    if participants is None:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Participants data not initialized on the server",
+        )
+
+    try:
+        selected_team = Team(team_str)
+        if selected_team in participants:
+            values["participants"][selected_team] += 1
+            return Response(status_code=status.HTTP_200_OK)
+        else:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid team: {team_str}"
+            )
+    except ValueError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid team format: {team_str}"
+        )

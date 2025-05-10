@@ -15,5 +15,5 @@ class GameSubmitResponse(BaseModel):
     perfect: int
     score: int
 
-class TeamCountResponse(BaseModel):
+class TeamCountResquest(BaseModel):
     team: str
