@@ -1,6 +1,6 @@
 import random
 
-def test(lst: list[int]) -> int:
+def test() -> int:
     """
     This function takes a list of integers and returns the sum of the integers in the list.
     """
