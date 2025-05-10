@@ -53,14 +53,20 @@ async def start_game(
 async def game_result() -> GameResult:
     scores_data = values.get("scores")
     participants_data = values.get("participants")
+
     if scores_data is None:
         raise ScoreNotFoundError()
 
-    all_scores_zero = all(score_dict[team] == 0 for score_dict in scores_data for team in score_dict)
+    non_zero_count = 0
+    for score_dict in scores_data:
+        for score in score_dict.values():
+            if score != 0:
+                non_zero_count += 1
+                break  # No need to check other scores in the same dict
 
     formatted_scores: List[GameScore] = []
-    if all_scores_zero:
-        # Hardcode dummy scores
+    if non_zero_count <= 1:
+        # Apply dummy scores if all scores are zero or only one is non-zero
         formatted_scores = [
             GameScore(team=Team.KOREA, score=150),
             GameScore(team=Team.YONSEI, score=120),
