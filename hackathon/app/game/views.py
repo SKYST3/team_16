@@ -30,6 +30,7 @@ async def submit_score(submission: GameSubmitRequest):
     if submission.timestamp:
         for timestamp in submission.timestamp:
             updated_timestamps.append(timestamp - values.get('game_started_at'))
+            print(f"game_started_at: {values.get('game_started_at')}")
 
     if answer_timestamps is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Beat list not initialized")
