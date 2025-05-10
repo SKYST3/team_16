@@ -73,7 +73,6 @@ async def game_result() -> GameResult:
                 participant_count = participants_data.get(team_enum, 1)  # Get participant count, default to 0
                 if participant_count > 0:
                     average_score = score_value / participant_count
-                    print(participant_count)
                     formatted_scores.append(GameScore(team=team_enum, score=int(average_score)))
                 else:
                     formatted_scores.append(GameScore(team=team_enum, score=0))  # Or handle as you see fit
