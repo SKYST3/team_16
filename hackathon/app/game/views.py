@@ -1,7 +1,7 @@
-import asyncio
+import asyncio, json
 from fastapi import APIRouter, status, HTTPException, Request, Response
 from fastapi.responses import StreamingResponse
-from hackathon.app.common import values, clients, Team
+from hackathon.app.common import values, clients, Team, admins
 from hackathon.app.game.dto import GameStatusResponse, GameSubmitResponse, GameSubmitRequest, TeamCountResquest
 from hackathon.app.game.error import GameStartAtNotFoundError, SongLengthNotFoundError
 from hackathon.app.game import service
@@ -52,6 +52,12 @@ async def select_team(selection: TeamCountResquest):
         selected_team = Team(team_str)
         if selected_team in participants:
             values["participants"][selected_team] += 1
+            resp = {
+                "team": selected_team,
+                "count": values["participants"][selected_team],
+            }
+            for queue in admins:
+                await queue.put(json.dumps(resp))
             return Response(status_code=status.HTTP_200_OK)
         else:
             raise HTTPException(

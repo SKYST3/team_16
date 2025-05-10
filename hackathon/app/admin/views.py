@@ -5,7 +5,7 @@ from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
 from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult, Participants
 from hackathon.app.admin.error import *
-from hackathon.app.common import clients
+from hackathon.app.common import clients, admins
 from typing import List
 
 admin_router = APIRouter()
@@ -65,7 +65,7 @@ async def get_headcount() -> int:
 async def get_participants(request: Request) -> Participants:
 
     queue = asyncio.Queue()
-    clients.append(queue)
+    admins.append(queue)
 
     async def event_generator():
         try:
@@ -75,6 +75,7 @@ async def get_participants(request: Request) -> Participants:
                 data = await queue.get()
                 yield f"data: {data}\n\n"
         finally:
-            clients.remove(queue)
+            print("Client disconnected")
+            admins.remove(queue)
     
     return StreamingResponse(event_generator(), media_type="text/event-stream")
