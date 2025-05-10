@@ -1,18 +1,26 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response, status
 from hackathon.app.common import values
+from hackathon.app.admin.dto.requests import GameStartRequest
+from hackathon.app.admin.dto.responses import GameStart
 
 admin_router = APIRouter()
 
 @admin_router.get("/game")
-async def get_game():
-    d = values["count"]
-    values["count"] += 1
-    return {"game": d}
+async def get_game() -> GameStart:
+    return {
+        "song_length": values["song_length"],
+        "beat_list": values["beat_list"],
+    }
 
 @admin_router.post("/game/start")
-def start_game():
-    return {"message": "Game started"}
+def start_game(
+    req: GameStartRequest,
+):
+    values["game_started_at"] = req.game_started_at
+    return Response(status_code=status.HTTP_200_OK)
 
 @admin_router.post("/game/result")
 def game_result():
-    return {"message": "Game result submitted"}
+    return {
+        "scores": values["scores"],
+    }
