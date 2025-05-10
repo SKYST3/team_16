@@ -49,7 +49,7 @@ async def start_game(
         
     return Response(status_code=status.HTTP_200_OK)
 
-@admin_router.post("/game/result", response_model=GameResult)
+@admin_router.get("/game/result", response_model=GameResult)
 async def game_result() -> GameResult:
     scores_data = values.get("scores")
     if scores_data is None:
