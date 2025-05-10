@@ -25,7 +25,7 @@ async def get_game() -> GameStart:
 async def start_game(
     req: GameStartRequest,
 ) -> Response:
-    if values.get("game_started_at") is not None:
+    if values.get("game_started_at") is None:
         return GameStartAtNotFoundError()
     
     values["game_started_at"] = req.game_started_at
@@ -34,7 +34,7 @@ async def start_game(
 
 @admin_router.post("/game/result")
 async def game_result() -> GameScore:
-    if values.get("scores") is not None:
+    if values.get("scores") is None:
         return ScoreNotFoundError()
     return {
         "scores": values["scores"],

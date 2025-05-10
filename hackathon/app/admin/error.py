@@ -18,9 +18,9 @@ class GameStartAtNotFoundError(HTTPException):
     def __init__(self) -> None:
         super().__init__(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="game_start_at not found."
+            detail="game_started_at not found."
         )
-        
+
 class ScoreNotFoundError(HTTPException):
     def __init__(self) -> None:
         super().__init__(

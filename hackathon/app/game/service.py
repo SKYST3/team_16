@@ -8,5 +8,3 @@ def test() -> int:
     for i in range(100):
         sum += random.randint(1, 100)
     return sum
-
-    return sum(lst)
