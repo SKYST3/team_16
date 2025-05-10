@@ -54,3 +54,7 @@ async def game_result() -> GameResult:
             formatted_scores.append(GameScore(team=team_enum, score=score_value))
 
     return GameResult(scores=formatted_scores)
+
+@admin_router.get("/game/headcount")
+async def get_headcount() -> int:
+    return len(clients)
