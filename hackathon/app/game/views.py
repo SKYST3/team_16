@@ -31,7 +31,7 @@ async def submit_score(submission: GameSubmitRequest):
 
     try:
         score_data = await service.process_submission_and_calculate_score(
-            submission.timestamp, answer_timestamps
+            submission.timestamp, answer_timestamps, submission.team
         )
         return GameSubmitResponse(**score_data)
     except Exception as e:
