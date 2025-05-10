@@ -1,5 +1,5 @@
 import json, asyncio
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, Response, status, Request
 from fastapi.responses import StreamingResponse
 from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
@@ -57,24 +57,23 @@ async def game_result() -> GameResult:
     return GameResult(scores=formatted_scores)
 
 
-@admin_router.get("/game/headcount")
+@admin_router.get("/headcount")
 async def get_headcount() -> int:
     return len(clients)
 
-@admin_router.get("/game/queue")
-async def get_queue() -> int:
-    return len(clients)
-
-@admin_router.get("/game/participants")
-async def get_participants() -> Participants:
+@admin_router.get("/participants")
+async def get_participants(request: Request) -> Participants:
 
     queue = asyncio.Queue()
     clients.append(queue)
 
     async def event_generator():
         try:
-            data = await queue.get()
-            yield f"data: {data}\n\n"
+            while True:
+                if await request.is_disconnected():
+                    break
+                data = await queue.get()
+                yield f"data: {data}\n\n"
         finally:
             clients.remove(queue)
     
