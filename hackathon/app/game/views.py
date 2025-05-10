@@ -24,7 +24,7 @@ async def get_game():
         song_length = song_length
     )
 
-@game_router.post("/submit", response = GameSubmitResponse)
+@game_router.post("/submit", response_model=GameSubmitResponse)
 async def submit_score(submission: GameSubmitRequest):
     answer_timestamps = values.get('beat_list')
 
@@ -37,5 +37,5 @@ async def submit_score(submission: GameSubmitRequest):
         )
         return GameSubmitResponse(**score_data)
     except Exception as e:
-        
+
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Scoring error: {str(e)}")

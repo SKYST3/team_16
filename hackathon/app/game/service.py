@@ -1,17 +1,17 @@
 from typing import List, Tuple
 
-PERFECT_THRESHOLD = 50  # Example threshold in milliseconds
-GOOD_THRESHOLD = 150    # Example threshold in milliseconds
+PERFECT_THRESHOLD = 0.5  # Example threshold in milliseconds
+GOOD_THRESHOLD = 1.5    # Example threshold in milliseconds
 
 async def process_submission_and_calculate_score(
-    submitted_timestamps: List[int],
-    answer_timestamps: List[int]
+    submitted_timestamps: List[float],
+    answer_timestamps: List[float]
 ) -> dict:
     """
     Merges timestamps, finds the closest submitted timestamp for each answer,
     and directly calculates the score.
     """
-    merged_timestamps: List[Tuple[int, str]] = []
+    merged_timestamps: List[Tuple[float, str]] = []
     for ts in submitted_timestamps:
         merged_timestamps.append((ts, 'submitted'))
     for ts in answer_timestamps:
