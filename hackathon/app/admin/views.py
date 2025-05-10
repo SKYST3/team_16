@@ -61,11 +61,11 @@ async def game_result() -> GameResult:
     
     for score_dict in scores_data:
         for team_enum, score_value in score_dict.items():
-            participant_count = participants_data.get(team_enum, 1)
-            if(participant_count == 0):
-                participant_count = 1
-            average_score = score_value / participant_count
-            formatted_scores.append(GameScore(team=team_enum, score=int(average_score)))
+            # participant_count = participants_data.get(team_enum, 1)
+            # if(participant_count == 0):
+            #     participant_count = 1
+            # average_score = score_value / participant_count
+            formatted_scores.append(GameScore(team=team_enum, score=score_value))
 
     return GameResult(scores=formatted_scores)
 
