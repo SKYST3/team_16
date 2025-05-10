@@ -28,13 +28,14 @@ async def get_game():
 async def submit_score(submission: GameSubmitRequest):
     answer_timestamps = values.get('beat_list')
 
-    submitted_timestamps = submission.timestamp
-
     if answer_timestamps is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Beat list not initialized")
 
     try:
-        score_data = service.calculate_score(submitted_timestamps, answer_timestamps)
+        score_data = await service.process_submission_and_calculate_score(
+            submission.timestamp, answer_timestamps
+        )
         return GameSubmitResponse(**score_data)
-    except ValueError as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+    except Exception as e:
+        
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Scoring error: {str(e)}")
