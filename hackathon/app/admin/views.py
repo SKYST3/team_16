@@ -1,8 +1,10 @@
+import json
 from fastapi import APIRouter, Response, status
 from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
 from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult
 from hackathon.app.admin.error import *
+from hackathon.app.common import clients
 
 admin_router = APIRouter()
 
@@ -24,12 +26,19 @@ async def get_game() -> GameStart:
 @admin_router.post("/game/start")
 async def start_game(
     req: GameStartRequest,
-) -> Response:
-    if values.get("game_started_at") is None:
-        return GameStartAtNotFoundError()
-    
+) -> Response:    
     values["game_started_at"] = req.game_started_at
+    
+    response = {
+        "game_started_at" : values["game_started_at"],
+        "song_length" : values["song_length"],
+        "beat_list" : values["beat_list"]
+    }
+    response = json.dumps(response)
 
+    for queue in clients:
+        await queue.put(response)
+        
     return Response(status_code=status.HTTP_200_OK)
 
 @admin_router.post("/game/result", response_model=GameResult)
