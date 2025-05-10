@@ -1,5 +1,5 @@
 # 인터랙티브 리듬 응원 게임 '쉐낏투유'
-![쉐낏투유](https://github.com/user-attachments/assets/72368720-d111-486a-8237-9e1d8c8c65c9)
+![logo2](https://github.com/user-attachments/assets/29917572-f0fe-4aae-a3f4-bc021120ae02)
 
 ## 🎯 프로젝트 기획 의도 및 목표
 
