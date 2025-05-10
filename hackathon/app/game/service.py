@@ -1,11 +1,13 @@
 from typing import List, Tuple
+from hackathon.app.common import values
 
 PERFECT_THRESHOLD = 0.5  # Example threshold in milliseconds
 GOOD_THRESHOLD = 1.5    # Example threshold in milliseconds
 
 async def process_submission_and_calculate_score(
     submitted_timestamps: List[float],
-    answer_timestamps: List[float]
+    answer_timestamps: List[float],
+    team_name: str
 ) -> dict:
     """
     Merges timestamps, finds the closest submitted timestamp for each answer,
@@ -71,6 +73,15 @@ async def process_submission_and_calculate_score(
                 # No close submitted timestamp found for this answer, it's a miss
                 pass # You could track misses if needed
 
+    for score_dict in values['scores']:
+        for team_enum in score_dict:  # Iterate through the keys (Team enums)
+            if team_enum.value == team_name:
+                score_dict[team_enum] += total_score
+                break
+        else:
+            continue
+        break
+    
     return {
         "normal": normal_count,
         "good": good_count,

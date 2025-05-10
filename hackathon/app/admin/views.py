@@ -2,9 +2,10 @@ import json
 from fastapi import APIRouter, Response, status
 from hackathon.app.common import values
 from hackathon.app.admin.dto.requests import GameStartRequest
-from hackathon.app.admin.dto.responses import GameStart, GameScore
+from hackathon.app.admin.dto.responses import GameStart, GameScore, GameResult
 from hackathon.app.admin.error import *
 from hackathon.app.common import clients
+from typing import List
 
 admin_router = APIRouter()
 
@@ -41,14 +42,15 @@ async def start_game(
         
     return Response(status_code=status.HTTP_200_OK)
 
-@admin_router.post("/game/result")
-async def game_result() -> GameScore:
-    if values.get("scores") is None:
-        return ScoreNotFoundError()
-    return {
-        "scores": values["scores"],
-    }
+@admin_router.post("/game/result", response_model=GameResult)
+async def game_result() -> GameResult:
+    scores_data = values.get("scores")
+    if scores_data is None:
+        raise ScoreNotFoundError()
 
-@admin_router.get("/game/headcount")
-async def get_headcount() -> int:
-    return len(clients)
+    formatted_scores: List[GameScore] = []
+    for score_dict in scores_data:
+        for team_enum, score_value in score_dict.items():
+            formatted_scores.append(GameScore(team=team_enum, score=score_value))
+
+    return GameResult(scores=formatted_scores)
