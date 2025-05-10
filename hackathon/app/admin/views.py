@@ -49,6 +49,6 @@ async def game_result() -> GameScore:
         "scores": values["scores"],
     }
 
-@admin_router.get("/game/queue")
-async def get_queue() -> int:
+@admin_router.get("/game/headcount")
+async def get_headcount() -> int:
     return len(clients)
